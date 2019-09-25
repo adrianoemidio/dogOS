@@ -24,8 +24,8 @@ void enableUART0()
 	bit_clr(UARTCC_U0,b0);
 	
 	//Baud Rate to 115200
-	UARTIBRD_U0 = 0x1B;
-	UARTFBRD_U0 = 0x08;
+	UARTIBRD_U0 = 43;
+	UARTFBRD_U0 = 26;
 	
 	//Data length of 8 bits, One stop bit, No parity, FIFOs disabled
 	UARTLCRH_U0 = 0x60;

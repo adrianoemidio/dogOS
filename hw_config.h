@@ -13,5 +13,23 @@ void enablePWM0();
 //Configure Control Lines
 void cfgCtrlLines();
 
+//Configure all GPIO as Tristate
+void setBusTrisate();
+
+//Enable data bus
+void enableDataBus();
+
+//Enable addr bus
+void enableAddrBus()
+
+//Send value to data bus
+void dataBusWrite(int data);
+
+//Send value to data bus
+void addrBusWrite(int data)
+
+//Disable Video RAM and and addr. counter
+void holdBus();
+
 
 #endif

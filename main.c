@@ -20,7 +20,13 @@ void main(void)
 	
 	disable_interrupts();
 	
-	setFreq50();
+	holdBus();
+	
+	//setBusTrisate();
+	
+	setFreq80();
+	
+	//enableDataBus();
 	
 	portTest();
 		
@@ -37,24 +43,24 @@ void main(void)
 	//GPIOCR_A = 0xFF;
 	
 	//PORT F 8-mA Drive Select
-	GPIODR8R_F = 0xFF;
+	//GPIODR8R_F = 0xFF;
 		
 	//PF1,PF2,PF3 as outputs and PF0, PF4 as inputs
-	GPIODIR_F = 0x0E;
+	//GPIODIR_F = 0x0E;
 	//GPIOPCTL_F = 0x00;
 	
 	//Port F as Digital I/O
-	GPIOAFSEL_F = 0x00;
+	//GPIOAFSEL_F = 0x00;
 		
 	// PF4 (USR_SW1) Pull-up enable
-	GPIOPUR_F = 0x10;
+	//GPIOPUR_F = 0x10;
 	
 	//Enable PF0, PF1, PF2, PF3 and PF4 Pad
-	GPIODEN_F = 0x1F;
+	//GPIODEN_F = 0x1F;
 	
 	
 	//CLear All LEDs
-	LED_A = 0x00;
+	//LED_A = 0x00;
 	
 	//SysTck configuration
 	
@@ -69,7 +75,7 @@ void main(void)
 	enablePWM0();
 	
 
-	enable_interrupts();
+	//enable_interrupts();
 	
 	//enableUART0();
 	
@@ -85,10 +91,10 @@ void main(void)
 	while(1)
 	{
 		
-		if(!USR_SW1)
-			LED_R = 0xFF;
-		else
-			LED_R = 0x00;
+		//if(!USR_SW1)
+			//LED_R = 0xFF;
+		//else
+			//LED_R = 0x00;
 		
 	}
 	

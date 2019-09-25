@@ -188,7 +188,17 @@ void init()
 
 void SysTick_Handler()
 {
-	//LED_G = (~LED_G);
+	//LED_B = (~LED_B);
+	
+	//static int valor = 0;
+	//
+	//if (valor > 0x0F)
+	//	valor = 0x00;
+	//
+	//dataBusWrite((valor + (valor*0x10)));
+	
+	//valor++;
+	uartTxString("ok\n");
 	
 }
 
@@ -197,8 +207,16 @@ void UART0_Handler()
 
 	int data = UARTDR_U0;
 	
-	if(data == 0xBB)
-		LED_B = (~LED_B);
+	
+	if(data <= 0xFF)
+	{
+		//LED_G = (~LED_G);
+		
+		//dataBusWrite(data);
+		
+		//uartTxString("ok\n");
+
+	}
 	
 	
 	
@@ -207,12 +225,12 @@ void UART0_Handler()
 
 void Default_Handler()
 {
-	LED_A = 0x00;
+	//LED_A = 0x00;
 	
 	while(1)
 	{
 
-		LED_R = (~LED_R);
+		//LED_R = (~LED_R);
 		delay(200000);
 
 	}

@@ -10,7 +10,7 @@ void portTest()
 	//All ports acessed through AHB
 	GPIOHBCTL |= 0x3F;
 	
-	//All ports Cloclk enable
+	//All ports Clock enable
 	RCGCGPIO |= 0x3F;
 	
 	int afsel_bkp = GPIOAFSEL_A;
