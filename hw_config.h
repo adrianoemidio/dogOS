@@ -1,6 +1,8 @@
 #ifndef HW_CONFIG_H
 #define HW_CONFIG_H
 
+#include "misc.h"
+
 //Set oscillator freq to 50 MHz
 void setFreq50();
 
@@ -19,17 +21,28 @@ void setBusTrisate();
 //Enable data bus
 void enableDataBus();
 
+//Enable System tick
+void enableSysTick();
+
+
 //Enable addr bus
-void enableAddrBus()
+void enableAddrBus();
 
 //Send value to data bus
 void dataBusWrite(int data);
 
 //Send value to data bus
-void addrBusWrite(int data)
+void addrBusWrite(int data);
 
 //Disable Video RAM and and addr. counter
 void holdBus();
 
+//Delay x cicles
+void delay(int dly);
+
+//Enable interrupt on V Blank
+void enableVSyncInterr();
+
+void fastBusFree();
 
 #endif

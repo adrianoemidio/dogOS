@@ -1,7 +1,3 @@
-#include "gpioTest.h"
-#include "LM4F120.h"
-#include "hw_config.h"
-#include "uart.h"
 #include "misc.h"
 
 //Test port state on power up and reset
@@ -13,8 +9,6 @@ void portTest()
 	//All ports Clock enable
 	RCGCGPIO |= 0x3F;
 	
-	int afsel_bkp = GPIOAFSEL_A;
-	int den_bkp =	GPIODEN_A;
 	
 	char newLine = '\n';
 	
@@ -38,10 +32,10 @@ void portTest()
 	uartTxString(port);
 	uartTxString("A\n");
 	uartTxString(reg0);
-	uartTxString(itoa(afsel_bkp,temp));
+	uartTxString(itoa(GPIOAFSEL_A,temp));
 	uartTxByte(newLine);
 	uartTxString(reg1);
-	uartTxString(itoa(den_bkp,temp));
+	uartTxString(itoa(GPIODEN_A,temp));
 	uartTxByte(newLine);
 	uartTxString(reg2);
 	uartTxString(itoa(GPIOPDR_A,temp));

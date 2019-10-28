@@ -1,6 +1,19 @@
 #ifndef MISC_H
 #define MISC_H
 
+#include "LM4F120.h"
+#include "Gfx2d.h"
+#include "gpioTest.h"  
+#include "hw_config.h"  
+#include "uart.h"
+#include "video.h"
+#include "space.h"
+
+sprite crab[2];
+
+int update;
+
+
 //Bit mask
 
 #define	b0	0x1
@@ -36,12 +49,17 @@
 #define	b30	0x40000000
 #define	b31	0x80000000
 
+//Mask for Fast bus enable/disable
+#define MASK_PB	0x73
+#define MASK_PC 0xF0
+#define MASK_PD	0x0F
+#define MASK_PE 0x3F
+#define MASK_PF	0x1E
 
 //Set bit in Register
 #define bit_set(reg,mask) (reg |= mask )	
 
 //Clear bit in Register
 #define bit_clr(reg,mask) (reg &= (~mask))
-
 
 #endif

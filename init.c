@@ -1,9 +1,10 @@
-#include "LM4F120.h"
+#include "misc.h"
 
 void init(void);
 void Default_Handler(void);
 void SysTick_Handler(void);
 void UART0_Handler(void);
+void GPIOA_Handler(void);
 void main(void);
 
 // The following are 'declared' in the linker script
@@ -33,12 +34,12 @@ const void * Vectors[] __attribute__((section(".vectors"))) ={
 	Default_Handler,   		/* PendSV */
 	SysTick_Handler,   		/* SysTick */		
 /* External interrupt handlers follow */
-	Default_Handler, 	/* IRQ	0	*/
+	GPIOA_Handler,	 	/* GPIO Port A	*/
 	Default_Handler, 	/* IRQ	1	*/
 	Default_Handler, 	/* IRQ	2	*/
 	Default_Handler, 	/* IRQ	3	*/
 	Default_Handler, 	/* IRQ	4	*/
-	UART0_Handler, 	/* IRQ	5	*/
+	UART0_Handler, 		/* UART0	*/
 	Default_Handler, 	/* IRQ	6	*/
 	Default_Handler, 	/* IRQ	7	*/
 	Default_Handler, 	/* IRQ	8	*/
@@ -188,9 +189,16 @@ void init()
 
 void SysTick_Handler()
 {
-	//LED_B = (~LED_B);
+	int data;
 	
-	//static int valor = 0;
+	//GPIODEN_A = 0x
+	
+	data = crab[0].pos.y;
+	
+	uartTxByte(data);
+	//LED_B = (~LED_B);
+	//uartTxString("A");
+	//;
 	//
 	//if (valor > 0x0F)
 	//	valor = 0x00;
@@ -198,7 +206,7 @@ void SysTick_Handler()
 	//dataBusWrite((valor + (valor*0x10)));
 	
 	//valor++;
-	uartTxString("ok\n");
+	//uartTxString("ok\n");
 	
 }
 
@@ -208,28 +216,58 @@ void UART0_Handler()
 	int data = UARTDR_U0;
 	
 	
-	if(data <= 0xFF)
-	{
-		//LED_G = (~LED_G);
-		
-		//dataBusWrite(data);
-		
-		//uartTxString("ok\n");
-
-	}
+	uartTxString("X");
+	
+	
 	
 	
 	
 }
 
+void GPIOA_Handler(void)
+{
+	
+
+
+
+	if (GPIOMIS_A & b6)
+	{	
+		
+		//Clear interrupt flag for PA6
+		bit_set(GPIOICR_A,b6);
+		
+		position new;
+		
+		
+		
+		new.x = crab[0].pos.x;
+		new.y = crab[0].pos.y;
+		
+		new.y++;
+		
+				
+		
+		moveSprite(&crab[0],new);
+
+		
+					
+
+		
+	} 
+
+	
+}
 
 void Default_Handler()
 {
 	//LED_A = 0x00;
 	
+	
+	
 	while(1)
 	{
 
+		uartTxString("ERRO\n");
 		//LED_R = (~LED_R);
 		delay(200000);
 

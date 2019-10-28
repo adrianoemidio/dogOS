@@ -1,11 +1,13 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
+#include "misc.h"
+
 //Screen resolution
-#define SCR_HEIGHT 220
+#define SCR_HEIGHT 240
 #define SCR_LENGTH 256
 
-#define T_PIXEL 220*256
+#define T_PIXEL 240*256
 
 //Control RAM's OE signal
 #define vramOutputEnable() PA2 = 0x00
@@ -33,6 +35,9 @@ void writeByteVram(int addr, int data);
 
 //Disable video and free bus acesses
 void videoDisable();
+
+//Enable video
+void videoEnable();
 
 
 

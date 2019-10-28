@@ -1,6 +1,8 @@
 #ifndef UART_H
 #define UART_H
 
+#include "misc.h"
+
 //Enable UART
 void enableUART0();
 

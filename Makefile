@@ -1,7 +1,7 @@
 PROJNAME = c_test
 TARGET=$(PROJNAME).elf
 BIN=$(PROJNAME).bin
-OBJ := main.o init.o hw_config.o uart.o gpioTest.o
+OBJ := main.o init.o hw_config.o uart.o gpioTest.o video.o GFX2d.o
 LDSCRIPT=lnk.ld
 CC=arm-none-eabi-gcc
 CROSS=arm-none-eabi-

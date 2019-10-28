@@ -1,95 +1,110 @@
-#include "LM4F120.h"
-#include "hw_config.h"
-#include "uart.h"
 #include "misc.h"
-#include "gpioTest.h"
 
-
-
-//Delay x cycles
-void delay(int dly);
-
-
+#include "img.h"
 
 
 void main(void)
 {
 	
-	// Define system clock as 16MHz (PIOSC)
-	//RCC = 0x3AD1;
+	update = 0;
 	
 	disable_interrupts();
 	
 	holdBus();
 	
-	//setBusTrisate();
 	
-	setFreq80();
 	
-	//enableDataBus();
+	//setFreq80();
+	setFreq50();
+	
+	cfgCtrlLines();
+
+
+
+	
+	videoEnable();
+	clearVideo(0x00);
+	
+	
+	
+	sprite squid[4];
+	
+	spritInit(&squid[0],8,8,squid_spt);
+		
+	squid[0].pos.x = 248;
+	squid[0].pos.y = 232;
+	
+	
+	for(int i = 1; i < 4; i++)
+		copySprite(&squid[0],&squid[i]);
+	
+	squid[1].pos.x = 0;
+	squid[1].pos.y = 0;
+	
+	squid[2].pos.x = 248;
+	squid[2].pos.y = 0;
+	
+	squid[3].pos.x = 0;
+	squid[3].pos.y = 232;
+	
+	
+	for(int i = 0; i < 4; i++)		
+		drawSprite(&squid[i]);
+		
+	
+	//sprite crab[2];
+	
+	spritInit(&crab[0],11,8,crab_spt);
+	copySprite(&crab[0],&crab[1]);
+	
+	crab[0].pos.x = 100;
+	crab[0].pos.y = 100;
+	
+	drawSprite(&crab[0]);
+	
+	
+	position p1,p2;
+	
+	p1.x = 120;
+	p1.y = 100;
+	
+	p2.x = 140;
+	p2.y = 100;
+	
+
+	
+	drawImage(12,8,octopus_spt,p1);
+	drawImage(13,8,cannon_spt,p2);
+	
+
+
+
 	
 	portTest();
 		
-	//Enable GPIOF AND GPIOB Ports clk
-	RCGCGPIO |= 0x22;
-	
-	//Turn on AHB access to GPIOF AND GPIOB
-	GPIOHBCTL |= 0x22;
-	
-	//Unlock Port F
-	//GPIOLOCK_A = 0x4C4F434B;
-	
-	// Allow changes to PF4-1
-	//GPIOCR_A = 0xFF;
-	
-	//PORT F 8-mA Drive Select
-	//GPIODR8R_F = 0xFF;
-		
-	//PF1,PF2,PF3 as outputs and PF0, PF4 as inputs
-	//GPIODIR_F = 0x0E;
-	//GPIOPCTL_F = 0x00;
-	
-	//Port F as Digital I/O
-	//GPIOAFSEL_F = 0x00;
-		
-	// PF4 (USR_SW1) Pull-up enable
-	//GPIOPUR_F = 0x10;
-	
-	//Enable PF0, PF1, PF2, PF3 and PF4 Pad
-	//GPIODEN_F = 0x1F;
 	
 	
-	//CLear All LEDs
-	//LED_A = 0x00;
+	enableSysTick();
+
+	enableVSyncInterr();
 	
-	//SysTck configuration
-	
-	//Counter value = 0xFFFFFF
-	STRELOAD |= 0xFFFFFF;
-	//Enable Interrupt and counter
-	STCTRL	 |= 0x07;
-	
-	//cfgCtrlLines();	
+
 	
 	//Enable PWM
 	enablePWM0();
+
+	enable_interrupts();
+	
+	
 	
 
-	//enable_interrupts();
 	
-	//enableUART0();
-	
-	
-	//uartTxString(msg);
-	
-	//char new = '\n';
-	
-	//uartTxByte(new);
 	
 
 	//Loop Forever	
 	while(1)
 	{
+		
 		
 		//if(!USR_SW1)
 			//LED_R = 0xFF;
@@ -106,10 +121,6 @@ void main(void)
 
 
 
-void delay(int dly)
-{
-	while (dly--);
-}
 
 
 

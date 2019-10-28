@@ -1,5 +1,3 @@
-#include "hw_config.h"
-#include "LM4F120.h"
 #include "misc.h"
 
 
@@ -99,11 +97,11 @@ void enablePWM0()
 	//PWM mode is enabled, edge-Count mode and Timer B in periodic timer mode
 	GPTMTBMR_0 |= 0x0A;
 	
-	//PWM period = 100us with main clock at 80MHz
-	GPTMTBILR_0 = 0x07;
+	//PWM period = 50us with main clock at 80MHz
+	GPTMTBILR_0 = 0x03;
 	
 	//PWM dutcycle = 50%
-	GPTMTBMATCHR_0 = 0x03;
+	GPTMTBMATCHR_0 = 0x01;
 	
 	//Enable PWM on Timer B enable
 	GPTMCTL_0 |= b8;
@@ -132,19 +130,53 @@ void enablePWM0()
 	
 }
 
+void fastBusFree()
+{
+	//reg &= (~mask)
+	//GPIODEN=0, GPIOPDR=0, GPIOPUR=0
+	
+	//Port B
+	GPIODEN_B &= (~MASK_PB);
+	GPIOPDR_B &= (~MASK_PB);
+	GPIOPUR_B &= (~MASK_PB);
+	
+	//Port C
+	GPIODEN_C &= (~MASK_PC);
+	GPIOPDR_C &= (~MASK_PC);
+	GPIOPUR_C &= (~MASK_PC);
+	
+	//Port D
+	GPIODEN_D &= (~MASK_PD);
+	GPIOPDR_D &= (~MASK_PD);
+	GPIOPUR_D &= (~MASK_PD);
+	
+	//Port E
+	GPIODEN_E &= (~MASK_PE);
+	GPIOPDR_E &= (~MASK_PE);
+	GPIOPUR_E &= (~MASK_PE);
+	
+	//Port F
+	GPIODEN_F &= (~MASK_PF);
+	GPIOPDR_F &= (~MASK_PF);
+	GPIOPUR_F &= (~MASK_PF);	
+	
+	
+	
+}
+
 //Configure all GPIO as Tristate
 void setBusTrisate()
 {
 	//GPIOAFSEL=0,GPIODEN=0, GPIOPDR=0, GPIOPUR=0, and GPIOPCTL=0
 	
 	//Enable clk on all GPIO
-	//RCGCGPIO |= 0x3F;
+	RCGCGPIO |= 0x3F;
 	
 	//Turn on AHB access to All GPIO
-	//GPIOHBCTL |= 0x3F;
+	GPIOHBCTL |= 0x3F;
 	
 	//GPIO A
-	/*GPIOAFSEL_A	= 0x00;
+	GPIOAFSEL_A	= 0x00;
 	GPIODEN_A	= 0x00;
 	GPIOPDR_A	= 0x00;
 	GPIOPUR_A	= 0x00;
@@ -158,11 +190,17 @@ void setBusTrisate()
 	GPIOPCTL_B	= 0x00;
 	
 	//GPIO C
-	GPIOAFSEL_C	= 0x00;
+	/*GPIOAFSEL_C	= 0x00;
 	GPIODEN_C	= 0x00;
 	GPIOPDR_C	= 0x00;
 	GPIOPUR_C	= 0x00;
-	GPIOPCTL_C	= 0x00;
+	GIOPCTL_C	= 0x00;*/
+	
+	GPIOAFSEL_C	= 15;
+	GPIODEN_C	= 15;
+	GPIOPDR_C	= 0x00;
+	GPIOPUR_C	= 15;
+	GPIOPCTL_C	= 4369;
 	
 	//GPIO D
 	GPIOAFSEL_D	= 0x00;
@@ -183,46 +221,10 @@ void setBusTrisate()
 	GPIODEN_F	= 0x00;
 	GPIOPDR_F	= 0x00;
 	GPIOPUR_F	= 0x00;
-	GPIOPCTL_F	= 0x00;*/
+	GPIOPCTL_F	= 0x00;
 	
 
-	//Enable clk on GPIO A and C
-	RCGCGPIO |= 0x05;
-	
-	//Turn on AHB access to All GPIO
-	GPIOHBCTL |= 0x3F;
-
-	//Disable alternate functions on GPIO A, except for Serial
-	GPIOPCTL_A	= 0x11; 
-	
-	bit_set(GPIODIR_A,b5);
-	
-	bit_clr(GPIOPUR_A,b5);
-	bit_clr(GPIOPDR_A,b5);
-	bit_set(GPIODR2R_A,b5);
-	
-	bit_clr(GPIOAFSEL_A,b5);
-	
-	/*
-	
-	bit_set(GPIODEN_C,b7);
-	
-	bit_set(GPIODIR_C,b7);
-	
-	bit_clr(GPIOPUR_C,b7);
-	bit_clr(GPIOPDR_C,b7);
-	bit_set(GPIODR2R_C,b7);
-	
-	bit_clr(GPIOAFSEL_C,b7);
-	
-	
-	bit_set(GPIODEN_C,b7);
-	
-	PC7 = 0xFF;
-	
-	
-	
-	PA5 = 0xFF;*/
+	cfgCtrlLines();
 }
 
 //Enable data bus
@@ -236,6 +238,7 @@ void enableDataBus()
 
 
 	//GPIO C
+	//PC[7:4]
 	GPIODIR_C |= 0xF0;
 	GPIOPUR_C |= 0x00;
 	GPIOPDR_C |= 0xF0;
@@ -244,22 +247,54 @@ void enableDataBus()
 	GPIODEN_C |= 0xF0;
 	
 	//GPIO F
-	
+	//PF[4:1] as output
 	GPIODIR_F |= 0x1E;
 	GPIOPUR_F |= 0x00;
 	GPIOPDR_F |= 0x1E;
 	GPIODR2R_F |= 0x1E;
 	GPIOAFSEL_F |= 0x00;
 	GPIODEN_F |= 0x1E;
-
-	
-	
-	
+		
 }
 
 //Enable addr bus
 void enableAddrBus()
 {
+	//Enable clk on All Ports
+	RCGCGPIO |= 0x3F;
+	
+	//Turn on AHB access to All GPIO
+	GPIOHBCTL |= 0x3F;
+
+
+
+	//PORTB 
+	//PB[1:0] and PB[4:6] as outputss
+	GPIODIR_B	|= 0x73;
+	GPIOPUR_B	|= 0x00;
+	GPIOPDR_B	|= 0x73;
+	GPIODR2R_B	|= 0x73;
+	GPIOAFSEL_B	|= 0x00;
+	GPIODEN_B	|= 0x73;
+
+	//GPIO D
+	//PD[3:0] as outputs
+	GPIODIR_D	|= 0x0F;
+	GPIOPUR_D	|= 0x00;
+	GPIOPDR_D	|= 0x0F;
+	GPIODR2R_D	|= 0x0F;
+	GPIOAFSEL_D	|= 0x00;
+	GPIODEN_D	|= 0x0F;
+	
+	//GPIO E
+	//PE[5:0] as outputs
+	GPIODIR_E	|= 0x3F;
+	GPIOPUR_E	|= 0x00;
+	GPIOPDR_E	|= 0x3F;
+	GPIODR2R_E	|= 0x3F;
+	GPIOAFSEL_E |= 0x00;
+	GPIODEN_E	|= 0x3F;
+
 }
 
 //Send value to data bus
@@ -274,7 +309,8 @@ void dataBusWrite(int data)
 	PC4 = (data & b4) ? 0xFF:0x00;
 	PC5 = (data & b5) ? 0xFF:0x00;
 	PC6 = (data & b6) ? 0xFF:0x00;
-	PC7 = (data & b7) ? 0xFF:0x00;
+	PC7 = (data & b7) ? 0xFF:0x00; 
+	
 	
 }
 
@@ -300,29 +336,74 @@ void addrBusWrite(int data)
 
 }
 
+//Enable interrupt on V Blank
+void enableVSyncInterr()
+{
+	//Enable interrupt
+	bit_set(EN0,b0);
+	
+	//Interrupt is Edge sensitive
+	bit_clr(GPIOIS_A,b6);
+	
+	//Interrupt generation is controlled by the GPIOIEV register
+	bit_clr(GPIOIBE_A,b6);
+	
+	//Interrupt on falling edge
+	bit_clr(GPIOIEV_A,b6);
+	
+	//PA6 interrupt is will be send to interrupt controller
+	bit_set(GPIOIM_A,b6);
+	
+	//Clear interrupt
+	bit_set(GPIOICR_A,b6);
+	
+	
+}
+
+
 //Configure control lines on ports PA[5:2]
 void cfgCtrlLines()
 {
-	//Enable clk on GPIOA
-	bit_set(RCGCGPIO,b0);
+	//Enable clk on all GPIO
+	RCGCGPIO |= 0x3F;
 	
-	//Port A access through AHB
-	bit_set(GPIOHBCTL,b0);
-	
-	//Disable SSIO on PA
-	GPIOPCTL_A = 0x00;
+	//Turn on AHB access to All GPIO
+	GPIOHBCTL |= 0x3F;
 
-	//Set pins PA[5:2] as outputs
-	bit_set(GPIODIR_A,(b5+b4+b3+b2));
+	//Disable alternate functions on GPIO A, except for Serial
+	GPIOPCTL_A	= 0x11; 
+
+	//PA[5,2] as outputs
+	GPIODIR_A	|= 0x3C;
 	
-	//Driver strength on PA[5:2] is 2mA
-	bit_set(GPIODR2R_A,(b5+b4+b3+b2));
+	//PA[7:6] as inputs
+	bit_clr(GPIODIR_A,b6+b7);
 	
-	//Enable digital out on PA[5:2]
-	bit_set(GPIODEN_A,(b5+b4+b3+b2));
+	//2mA output buffer on PA[5,2]
+	GPIODR2R_A	|= 0x3C;
 	
+	//Enable digital output
+	GPIODEN_A |= 0xFC;
+		
+	//Pin PB7 as output
+	GPIODIR_B |= b7;
 	
+	//Alternate function on PB7
+	GPIOAFSEL_B |= b7;
+		
+	//PB7 as T0CCP1 output
+	GPIOPCTL_B = 0x70000000;
 	
+	//PORT B 8-mA Drive Select
+	GPIODR8R_B = 0xFF;
+	
+	//Slew Rate enable on pin PB6
+	//GPIOSLR_B |= b6;
+	
+	//Enable PB6 Pad
+	GPIODEN_B |= b7;
+	
+
 	
 }
 
@@ -350,11 +431,31 @@ void holdBus()
 	//Enable digital output
 	GPIODEN_A |= 0x3C;
 	
-	PA2 = 0x00;
-	PA5 = 0xFF;
-	PA3 = 0x00;
-	PA4 = 0xFF;
+	
+	vramOutputDisable();
+	vramChipSelectDisable();
+	addrCounterDisable();
+	vramWriteDisable();
+	
+	
 	
 	GPIOPCTL_B = 0x00;
 	
 }
+
+//SysTck configuration
+void enableSysTick()
+{
+			
+	
+	//Counter value = 0xFFFFFF
+	STRELOAD |= 0xFFFFFF;
+	//Enable Interrupt and counter
+	STCTRL	 |= 0x07;
+}
+
+void delay(int dly)
+{
+	while (dly--);
+}
+

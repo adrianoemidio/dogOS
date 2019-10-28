@@ -1,4 +1,3 @@
-#include "LM4F120.h"
 #include "misc.h"
 
 //Enable UART
@@ -24,8 +23,12 @@ void enableUART0()
 	bit_clr(UARTCC_U0,b0);
 	
 	//Baud Rate to 115200
-	UARTIBRD_U0 = 43;
-	UARTFBRD_U0 = 26;
+	//50MHz
+	UARTIBRD_U0 = 27;
+	UARTFBRD_U0 = 8;
+	//80MHz
+	//UARTIBRD_U0 = 43;
+	//UARTFBRD_U0 = 26;
 	
 	//Data length of 8 bits, One stop bit, No parity, FIFOs disabled
 	UARTLCRH_U0 = 0x60;

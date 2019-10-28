@@ -1,6 +1,8 @@
 #ifndef GPIOTEST_H
 #define GPIOTEST_H
 
+#include "misc.h"
+
 #define introMsg	"Bemvindo ao DogOS Alpha 0.01!!!!\n"
 #define testMsg		"Teste do estados das portas.....\n"
 #define septr		"*********************************************\n"
