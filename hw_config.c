@@ -443,16 +443,104 @@ void holdBus()
 	
 }
 
+//Enable control serial control port
+void enableJoyPort()
+{
+	
+	//Enable clk on All Ports
+	RCGCGPIO |= 0x3F;
+	
+	//Turn on AHB access to All GPIO
+	GPIOHBCTL |= 0x3F;
+	
+	
+	//Disable alternate funciton on PB2 and PB3
+	GPIOPCTL_B &= 0xFFFF00FF;
+	
+	//PB3 as outputs
+	bit_set(GPIODIR_B,b3);
+	
+	//PB2 as input
+	bit_clr(GPIODIR_B,b2);
+
+	//2mA output buffer on PB[3:2]
+	GPIODR2R_B = 0x0C;
+	
+	//Enable PB[3:2] digital output
+	GPIODEN_B |= 0x0C;
+
+	//joyInit();
+	
+}
+
+//Initializate joystick
+void joyInit()
+{
+	char joy_ok = 0;
+	
+	char tries = 0;
+	
+	int data;
+	
+	while((!joy_ok))
+	{
+		tries++;
+		
+		data = 0;
+		
+		
+		
+		for(int i = 0; i < 9; i++)
+		{
+			PB3 = 0xFF;
+		
+			delay(600);
+		
+			PB3 = 0x00;
+			
+			delay(600);
+			
+			data += ((PB2/4) << i);
+			
+		}
+		
+		
+		if(data == 0x0F)
+			joy_ok = 1;
+		else
+		{
+			PB3 = 0xFF;
+		
+			delay(600);
+		
+			PB3 = 0x00;
+			
+			delay(600);
+			
+		}
+		
+		
+		
+	}
+	
+}
+
+
 //SysTck configuration
 void enableSysTick()
 {
 			
 	
 	//Counter value = 0xFFFFFF
-	STRELOAD |= 0xFFFFFF;
+	//STRELOAD |= 0xFFFFFF;
+	
+	STRELOAD |= 0x500;
+	
 	//Enable Interrupt and counter
 	STCTRL	 |= 0x07;
 }
+
+
 
 void delay(int dly)
 {

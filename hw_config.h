@@ -45,4 +45,10 @@ void enableVSyncInterr();
 
 void fastBusFree();
 
+//Enable control serial joysticks port
+void enableJoyPort();
+
+//Initializate joystick
+void joyInit();
+
 #endif

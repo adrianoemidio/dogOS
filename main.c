@@ -12,14 +12,14 @@ void main(void)
 	
 	holdBus();
 	
-	
+	delay(2000);
 	
 	//setFreq80();
 	setFreq50();
 	
 	cfgCtrlLines();
 
-
+	enableJoyPort();
 
 	
 	videoEnable();
@@ -94,11 +94,8 @@ void main(void)
 	enablePWM0();
 
 	enable_interrupts();
-	
-	
-	
-
-	
+			
+	PB3 = 0x00;
 	
 
 	//Loop Forever	

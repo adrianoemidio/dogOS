@@ -189,13 +189,45 @@ void init()
 
 void SysTick_Handler()
 {
-	int data;
+	static int data = 0;
+	
+	static int count = 0;
+	
+	if(PB3 == 0)
+	{
+		PB3 = 0xFF;
+		count++;
+	}
+	else
+	{
+		data += ((PB2/4) << count);
+	
+		PB3 = 0x00;
+		
+	}
+	
+	if(count == 20)
+	{
+		count = 0;
+		
+		uartTxByte(data & 0x00FF);
+		uartTxByte((data & 0xFF00) >> 8);
+		uartTxByte((data & 0xFF0000) >> 16);
+		
+		
+		up		= (data & 0x040000) ? 0xFF:0x00;
+		down	= (data & 0x020000) ? 0xFF:0x00;
+		left	= (data & 0x000200) ? 0xFF:0x00;
+		right	= (data & 0x000400) ? 0xFF:0x00;
+				
+		data = 0;
+	}
 	
 	//GPIODEN_A = 0x
 	
-	data = crab[0].pos.y;
+	//data = crab[0].pos.y;
 	
-	uartTxByte(data);
+	
 	//LED_B = (~LED_B);
 	//uartTxString("A");
 	//;
@@ -215,6 +247,7 @@ void UART0_Handler()
 
 	int data = UARTDR_U0;
 	
+
 	
 	uartTxString("X");
 	
@@ -243,9 +276,17 @@ void GPIOA_Handler(void)
 		new.x = crab[0].pos.x;
 		new.y = crab[0].pos.y;
 		
-		new.y++;
+		if(up == 0x00)
+			new.y++;
 		
+		if(down == 0x00)
+				new.y--;
 				
+		if(left == 0x00)
+			new.x--;
+		
+		if(right == 0x00)
+				new.x++;
 		
 		moveSprite(&crab[0],new);
 

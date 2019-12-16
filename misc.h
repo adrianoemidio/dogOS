@@ -13,6 +13,10 @@ sprite crab[2];
 
 int update;
 
+int up;
+int down;
+int left;
+int right;
 
 //Bit mask
 
